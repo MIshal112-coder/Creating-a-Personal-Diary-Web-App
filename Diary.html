@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Diary</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 400px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    button {
+      padding: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .entry {
+      background: #f8f9fa;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+    .entry h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+    .entry p {
+      margin: 5px 0 0;
+      font-size: 14px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Personal Diary</h1>
+    <textarea id="diary-input" placeholder="Write your thoughts..."></textarea>
+    <button id="save-btn">Save Entry</button>
+    <div id="entries"></div>
+  </div>
+  <script>
+    const saveButton = document.getElementById('save-btn');
+    const diaryInput = document.getElementById('diary-input');
+    const entriesContainer = document.getElementById('entries');
+
+    // Load existing diary entries from localStorage
+    function loadEntries() {
+      const entries = JSON.parse(localStorage.getItem('diaryEntries')) || [];
+      entries.forEach(entry => displayEntry(entry.text, entry.date));
+    }
+
+    // Save new entry
+    saveButton.addEventListener('click', () => {
+      const text = diaryInput.value.trim();
+      if (text) {
+        const date = new Date().toLocaleString();
+        saveToLocalStorage(text, date);
+        displayEntry(text, date);
+        diaryInput.value = ''; // Clear the input
+      }
+    });
+
+    // Save entry to localStorage
+    function saveToLocalStorage(text, date) {
+      const entries = JSON.parse(localStorage.getItem('diaryEntries')) || [];
+      entries.push({ text, date });
+      localStorage.setItem('diaryEntries', JSON.stringify(entries));
+    }
+
+    // Display a diary entry
+    function displayEntry(text, date) {
+      const entryDiv = document.createElement('div');
+      entryDiv.classList.add('entry');
+      entryDiv.innerHTML = `
+        <h3>${date}</h3>
+        <p>${text}</p>
+      `;
+      entriesContainer.prepend(entryDiv); // Add the new entry at the top
+    }
+
+    // Initialize
+    loadEntries();
+  </script>
+</body>
+</html>
